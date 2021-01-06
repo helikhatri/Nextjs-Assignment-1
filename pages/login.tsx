@@ -15,11 +15,8 @@ import Container from '@material-ui/core/Container';
 import axios from 'axios';
 import Router from 'next/router';
 import { useAppContext } from "./contextLib";
+import jwt from 'jsonwebtoken';
 
-interface Ifields{
-  email: string,
-  password: string
-}
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
@@ -57,9 +54,10 @@ export default function SignIn() {
   const classes = useStyles();
   const apiurl = 'https://reqres.in/api/login';
   const {userHasAuthenticated} = useAppContext();
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+  const [msg, setMsg] = useState<string>('');
+let token='';
   const handleSubmit = (e: any) => {
     e.preventDefault();
     const payload = {
@@ -69,17 +67,24 @@ export default function SignIn() {
     axios.post(apiurl, payload).then(function (response) {
       debugger;
       if (response.status === 200) {
-        //set cookie
-       // cookie.set('token', response.data.token, {expires: 2});
         localStorage.setItem("token", JSON.stringify(response.data.token));
-        //localStorage.setItem("username", JSON.stringify(response.email));
-      // userHasAuthenticated(true);
-       Router.push('/Userlist');
+        // userHasAuthenticated(true);
+         token=response.data.token
+         Router.push('/Userlist');
       }
       else
       {
         alert("Check yur Username and password");
       }
+      // if(token)
+      // {
+      //   const json=jwt.decode(token) as {[key : string] : string};
+      //   Router.push('/Userlist');
+      // }
+      // else
+      // {
+      //   setMsg('Something went wrong');
+      // };
     });
   };
 
@@ -93,9 +98,9 @@ export default function SignIn() {
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
+        <h2>{msg}</h2>
         <form className={classes.form} noValidate onSubmit={handleSubmit}>
           <TextField
-            variant="outlined"
             margin="normal"
             required
             fullWidth
@@ -108,7 +113,6 @@ export default function SignIn() {
              onChange={(e) => setEmail(e.target.value)}
           />
           <TextField
-            variant="outlined"
             margin="normal"
             required
             fullWidth

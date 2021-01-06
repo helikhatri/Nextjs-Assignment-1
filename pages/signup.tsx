@@ -72,7 +72,7 @@ export default function SignIn() {
         localStorage.setItem("token", JSON.stringify(response.data.token));
         //localStorage.setItem("username", JSON.stringify(response.email));
         //alert("success");
-      // userHasAuthenticated(true);
+      userHasAuthenticated(true);
        Router.push('/login');
       }
       else
@@ -94,7 +94,7 @@ export default function SignIn() {
         </Typography>
         <form className={classes.form} noValidate onSubmit={handleSubmit}>
           <TextField
-            variant="outlined"
+            // variant="outlined"
             margin="normal"
             required
             fullWidth
@@ -107,7 +107,7 @@ export default function SignIn() {
              onChange={(e) => setEmail(e.target.value)}
           />
           <TextField
-            variant="outlined"
+            //variant="outlined"
             margin="normal"
             required
             fullWidth
@@ -120,7 +120,7 @@ export default function SignIn() {
           onChange={(e) => setPassword(e.target.value)}
           />
            <TextField
-            variant="outlined"
+            //variant="outlined"
             margin="normal"
             required
             fullWidth

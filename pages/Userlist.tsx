@@ -1,50 +1,101 @@
 import clsx from 'clsx';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import Drawer from '@material-ui/core/Drawer';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import List from '@material-ui/core/List';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import Typography from '@material-ui/core/Typography';
-import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
+import {
+  Drawer,
+  AppBar,
+  Toolbar,
+  List,
+  CssBaseline,
+  Typography,
+  Divider,
+  IconButton,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  Collapse,
+  Button
+} from '@material-ui/core';
+import {
+  ExpandLess,
+  ExpandMore,
+  StarBorder
+} from '@material-ui/icons';
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
-import React,{useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import { DataGrid } from '@material-ui/data-grid';
+import { Alert, AlertTitle } from '@material-ui/lab';
+import Router from 'next/router';
+import Link from 'next/link';
 import axios from 'axios';
 
-interface IColumnNames{
-    name: string
-    pantone_value: string
-    color: string
-    year: string
-    col: Function
-  }
-const columns = [
-  { field: 'id', headerName: 'ID', width: 70 },
-  { field: 'name', headerName: 'Name', width: 130 },
-  { field: 'color', headerName: 'Color', width: 130 },
-  {
-    field: 'year',
-    headerName: 'year',
-    type: 'number',
-    width: 90,
-  },
-  
-];
+interface IColumnNames {
+  id: number
+  name: string
+  pantone_value: string
+  color: string
+  year: string
+  col: Function
+}
+export default function DataTable() {
+  const [users, setUsers] = useState<IColumnNames[]>([]);
+  const apiurl = 'https://reqres.in/api/unknown';
+  const theme = useTheme();
+  const [open, setOpen] = React.useState<boolean>(false);
+  const [nestopen, setnestOpen] = React.useState<boolean>(false);
+  const [alert, setAlert] = useState(false);
+  const [msg, setMsg] = useState('');
 
-const drawerWidth = 240;
-const useStyles = makeStyles((theme) => ({
+  const columns = [
+    { field: 'id', headerName: 'ID', width: 70 },
+    { field: 'name', headerName: 'Name', width: 130 },
+    { field: 'color', headerName: 'Color', width: 130 },
+    {
+      field: 'year',
+      headerName: 'year',
+      type: 'number',
+      width: 90,
+    },
+    {
+      field: '',
+      headerName: 'Action',
+      width: 200,
+      renderCell: (record: any) => (
+        <strong>
+          <Button
+            variant="contained"
+            color="primary"
+            size="small"
+            style={{ marginLeft: 16 }}
+            onClick={editRecord}
+          >
+            Edit
+        </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            size="small"
+            style={{ marginLeft: 16 }}
+            onClick={() => deleteRecord(record.id)}
+          >
+            Delete
+      </Button>
+        </strong>
+      ),
+    }
+  ];
+
+  const drawerWidth = 240;
+  const useStyles = makeStyles((theme) => ({
 
     root: {
       display: 'flex',
+    },
+    nested: {
+      paddingLeft: theme.spacing(4),
     },
     appBar: {
       zIndex: theme.zIndex.drawer + 1,
@@ -103,14 +154,8 @@ const useStyles = makeStyles((theme) => ({
       padding: theme.spacing(3),
     },
   }));
-  
-export default function DataTable() {
-    const [users, setUsers] = useState<IColumnNames[]>([]);
-    const apiurl = 'https://reqres.in/api/unknown';
-    const classes = useStyles();
-  const theme = useTheme();
-  const [open, setOpen] = React.useState(false);
 
+  const classes = useStyles();
   const handleDrawerOpen = () => {
     setOpen(true);
   };
@@ -119,86 +164,147 @@ export default function DataTable() {
     setOpen(false);
   };
 
-   
-    useEffect(() => {
-    
-        axios.get(apiurl)
-          .then((response =>
-           {debugger;
-             setUsers(response.data.data)
-             debugger;}  ))
-          console.log(users);
-      }, [])
+  const handleClick = () => {
+    setnestOpen(!nestopen);
+  };
+
+  const editRecord = (props: any) => {
+    setAlert(true);
+    const user = [...users];
+    setMsg('Record Edited successfully');
+  }
+  const deleteRecord = (index: number) => {
+    debugger;
+    const user = [...users];
+    user.splice(index, 1);
+    setAlert(true);
+    setUsers(user);
+    setMsg('Record Deleted successfully');
+  }
+
+  useEffect(() => {
+
+    axios.get(apiurl)
+      .then((response => {
+        setUsers(response.data.data)
+      }))
+    console.log(users);
+  }, [])
+
+  useEffect(() => {
+    setInterval(() => {
+      alert ?
+        setAlert(false)
+        : setAlert(false)
+    }, 2000);
+  }, [])
 
   return (
     <div className={classes.root}>
-    <CssBaseline />
-    <AppBar
-      position="fixed"
-      className={clsx(classes.appBar, {
-        [classes.appBarShift]: open,
-      })}
-    >
-      <Toolbar>
-        <IconButton
-          color="inherit"
-          aria-label="open drawer"
-          onClick={handleDrawerOpen}
-          edge="start"
-          className={clsx(classes.menuButton, {
-            [classes.hide]: open,
-          })}
-        >
-          <MenuIcon />
-        </IconButton>
-        <Typography variant="h6" noWrap style={{textAlign: 'center'}}>
-         User list
+      <CssBaseline />
+      <AppBar
+        position="fixed"
+        className={clsx(classes.appBar, {
+          [classes.appBarShift]: open,
+        })}
+      >
+        <Toolbar>
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            onClick={handleDrawerOpen}
+            edge="start"
+            className={clsx(classes.menuButton, {
+              [classes.hide]: open,
+            })}
+          >
+            <MenuIcon />
+          </IconButton>
+          <Typography variant="h6" noWrap style={{ textAlign: 'center' }}>
+            User list
         </Typography>
-      </Toolbar>
-    </AppBar>
-    <Drawer
-      variant="permanent"
-      className={clsx(classes.drawer, {
-        [classes.drawerOpen]: open,
-        [classes.drawerClose]: !open,
-      })}
-      classes={{
-        paper: clsx({
+          <Typography variant="h6" noWrap style={{ marginLeft: 'auto' }}>
+            Logout
+        </Typography>
+        </Toolbar>
+      </AppBar>
+      <Drawer
+        variant="permanent"
+        className={clsx(classes.drawer, {
           [classes.drawerOpen]: open,
           [classes.drawerClose]: !open,
-        }),
-      }}
-    >
-      <div className={classes.toolbar}>
-        <IconButton onClick={handleDrawerClose}>
-          {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
-        </IconButton>
-      </div>
-      <Divider />
-      <List>
-        {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-          <ListItem button key={text}>
-            <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-            <ListItemText primary={text} />
-          </ListItem>
-        ))}
-      </List>
-      <Divider />
-      <List>
-        {['All mail', 'Trash', 'Spam'].map((text, index) => (
-          <ListItem button key={text}>
-            <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-            <ListItemText primary={text} />
-          </ListItem>
-        ))}
-      </List>
-    </Drawer>
-    <main className={classes.content}>
-      <div style={{ height: 400, width: '84%', marginTop: '65px', float: 'right'}}>
-    <DataGrid rows={users} columns={columns} pageSize={5} checkboxSelection />
-  </div>
-    </main>
-  </div>
-);
+        })}
+        classes={{
+          paper: clsx({
+            [classes.drawerOpen]: open,
+            [classes.drawerClose]: !open,
+          }),
+        }}
+      >
+        <div className={classes.toolbar}>
+          <IconButton onClick={handleDrawerClose}>
+            {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+          </IconButton>
+        </div>
+        <Divider />
+        <List>
+
+          <div>
+            <Link href='/dashboard'>
+              <ListItem button key='Dashboard'>
+                <ListItemIcon> <InboxIcon /> </ListItemIcon>
+                <ListItemText primary='Dashboard' />
+              </ListItem>
+            </Link>
+            <ListItem button key='Manage User'>
+              <ListItemIcon> <MailIcon /> </ListItemIcon>
+              <ListItemText primary='Manage User' onClick={handleClick} />
+              {nestopen ? <ExpandLess /> : <ExpandMore />}
+            </ListItem>
+            <Collapse in={nestopen} timeout="auto" unmountOnExit>
+              <List component="div" disablePadding>
+                <ListItem button className={classes.nested}>
+                  <ListItemIcon>
+                    <StarBorder />
+                  </ListItemIcon>
+                  <Link href='/Userlist'>
+                    <ListItemText primary="User List" />
+                  </Link>
+                </ListItem>
+              </List>
+            </Collapse>
+            <Link href='/Home'>
+              <ListItem button key='User History'>
+                <ListItemIcon> <MailIcon /> </ListItemIcon>
+                <ListItemText primary='User History' />
+              </ListItem>
+            </Link>
+            <Link href='/Home'>
+              <ListItem button key='Manage Documents'>
+                <ListItemIcon> <MailIcon /> </ListItemIcon>
+                <ListItemText primary='Manage Documents' />
+              </ListItem>
+            </Link>
+          </div>
+
+        </List>
+
+      </Drawer>
+      <main className={classes.content}>
+        <div style={{ height: 400, width: '100%', float: 'right' }}>
+          <div className={classes.toolbar} />
+          {alert ?
+            <Alert severity="success">
+              <AlertTitle>{msg}</AlertTitle>
+            </Alert> : null}
+          <DataGrid rows={users}
+            columns={columns}
+            pageSize={5}
+            checkboxSelection
+          />
+        </div>
+      </main>
+    </div>
+  );
 }
 
