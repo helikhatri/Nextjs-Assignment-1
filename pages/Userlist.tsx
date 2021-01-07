@@ -23,13 +23,17 @@ import {
 import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import MailIcon from '@material-ui/icons/Mail';
+import HistoryIcon from '@material-ui/icons/History';
+import DashboardIcon from '@material-ui/icons/Dashboard';
+import AssignmentIcon from '@material-ui/icons/Assignment';
+import ListIcon from '@material-ui/icons/List';
+import GroupIcon from '@material-ui/icons/Group';
 import React, { useState, useEffect } from 'react';
 import { DataGrid } from '@material-ui/data-grid';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import Router from 'next/router';
 import Link from 'next/link';
+import { useAppContext } from "./contextLib";
 import axios from 'axios';
 
 interface IColumnNames {
@@ -46,8 +50,9 @@ export default function DataTable() {
   const theme = useTheme();
   const [open, setOpen] = React.useState<boolean>(false);
   const [nestopen, setnestOpen] = React.useState<boolean>(false);
-  const [alert, setAlert] = useState(false);
-  const [msg, setMsg] = useState('');
+  const [alert, setAlert] = useState<boolean>(false);
+  const [msg, setMsg] = useState<string>('');
+  const {isAuthenticated } = useAppContext();
 
   const columns = [
     { field: 'id', headerName: 'ID', width: 70 },
@@ -60,7 +65,7 @@ export default function DataTable() {
       width: 90,
     },
     {
-      field: '',
+      field: ' ',
       headerName: 'Action',
       width: 200,
       renderCell: (record: any) => (
@@ -224,7 +229,7 @@ export default function DataTable() {
             User list
         </Typography>
           <Typography variant="h6" noWrap style={{ marginLeft: 'auto' }}>
-            Logout
+          <Link href='/login' style={{ cursor: 'pointer'}}>Logout </Link>
         </Typography>
         </Toolbar>
       </AppBar>
@@ -252,12 +257,12 @@ export default function DataTable() {
           <div>
             <Link href='/dashboard'>
               <ListItem button key='Dashboard'>
-                <ListItemIcon> <InboxIcon /> </ListItemIcon>
+                <ListItemIcon> <DashboardIcon /> </ListItemIcon>
                 <ListItemText primary='Dashboard' />
               </ListItem>
             </Link>
             <ListItem button key='Manage User'>
-              <ListItemIcon> <MailIcon /> </ListItemIcon>
+              <ListItemIcon> <GroupIcon /> </ListItemIcon>
               <ListItemText primary='Manage User' onClick={handleClick} />
               {nestopen ? <ExpandLess /> : <ExpandMore />}
             </ListItem>
@@ -275,13 +280,13 @@ export default function DataTable() {
             </Collapse>
             <Link href='/Home'>
               <ListItem button key='User History'>
-                <ListItemIcon> <MailIcon /> </ListItemIcon>
+                <ListItemIcon> <HistoryIcon /> </ListItemIcon>
                 <ListItemText primary='User History' />
               </ListItem>
             </Link>
             <Link href='/Home'>
               <ListItem button key='Manage Documents'>
-                <ListItemIcon> <MailIcon /> </ListItemIcon>
+                <ListItemIcon> <AssignmentIcon /> </ListItemIcon>
                 <ListItemText primary='Manage Documents' />
               </ListItem>
             </Link>
