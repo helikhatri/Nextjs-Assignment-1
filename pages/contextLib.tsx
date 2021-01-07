@@ -5,7 +5,7 @@ interface IContextProps  {
   isAuthenticating: boolean,
   //userHasAuthenticated:React.Dispatch<React.SetStateAction<boolean>>
   //userHasAuthenticated: ({userHasAuthenticated}:{userHasAuthenticated:boolean}) => void;
- userHasAuthenticated:any 
+ userHasAuthenticated:Function;
 };
 export const AppContext = createContext<Partial<IContextProps>>({})
 

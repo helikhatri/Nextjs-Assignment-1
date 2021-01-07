@@ -72,7 +72,7 @@ export default function SignIn() {
         localStorage.setItem("token", JSON.stringify(response.data.token));
         //localStorage.setItem("username", JSON.stringify(response.email));
         //alert("success");
-      userHasAuthenticated(true);
+      //userHasAuthenticated(true);
        Router.push('/login');
       }
       else

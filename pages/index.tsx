@@ -1,11 +1,12 @@
 import Head from 'next/head'
 import styles from '../Home.module.css'
+import Layout from './layout';
 
 const index = () => {
   return(
-  <div>
+  <Layout title="Welcome User">
     <h1>Hello world</h1>
-  </div>
+  </Layout>
   );
 }
 export default index;

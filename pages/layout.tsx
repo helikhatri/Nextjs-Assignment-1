@@ -21,16 +21,19 @@ import {
     ExpandMore,
     StarBorder
 } from '@material-ui/icons';
-import MenuIcon from '@material-ui/icons/Menu';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import ChevronRightIcon from '@material-ui/icons/ChevronRight';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import MailIcon from '@material-ui/icons/Mail';
+import HistoryIcon from '@material-ui/icons/History';
+import DashboardIcon from '@material-ui/icons/Dashboard';
+import AssignmentIcon from '@material-ui/icons/Assignment';
+import MenuIcon from '@material-ui/icons/Menu';
+import ListIcon from '@material-ui/icons/List';
+import GroupIcon from '@material-ui/icons/Group';
+import Link from 'next/link';
 import React from 'react';
-import Userlist from './Userlist';
 
 
-export default function DataTable(props) {
+export default function layout(props) {
     const theme = useTheme();
     const drawerWidth = 240;
     const [nestopen, setnestOpen] = React.useState<boolean>(false);
@@ -114,6 +117,7 @@ export default function DataTable(props) {
 
 
     const classes = useStyles();
+    console.log(props);
     return (
         <div className={classes.root}>
             <CssBaseline />
@@ -136,11 +140,11 @@ export default function DataTable(props) {
                         <MenuIcon />
                     </IconButton>
                     <Typography variant="h6" noWrap style={{ textAlign: 'center' }}>
-                        User list
-        </Typography>
-                    <Typography variant="h6" noWrap style={{ marginLeft: '955px' }}>
-                        Logout
-        </Typography>
+                        {props.title}
+                    </Typography>
+                    <Typography variant="h6" noWrap style={{ marginLeft: 'auto' }}>
+                        <Link href='/login'>Logout </Link>
+                    </Typography>
                 </Toolbar>
             </AppBar>
             <Drawer
@@ -163,33 +167,51 @@ export default function DataTable(props) {
                 </div>
                 <Divider />
                 <List>
-                    {['Dashboard', 'Manage User', 'User History', 'Drafts'].map((text, index) => (
-                        <div>
-                            <ListItem button key={text}>
-                                <ListItemIcon>{index % 2 === 0 ? <InboxIcon /> : <MailIcon />}</ListItemIcon>
-                                <ListItemText primary={text} />
-                                {/* <ListItemText primary={text}  { ...index === 1 ? onClick ={handleClick} : null }/> */}
-                                {index === 1 ? nestopen ? <ExpandLess /> : <ExpandMore /> : null}
-                            </ListItem>
-                            <Collapse in={nestopen} timeout="auto" unmountOnExit>
-                                <List component="div" disablePadding>
-                                    <ListItem button className={classes.nested}>
-                                        <ListItemIcon>
-                                            <StarBorder />
-                                        </ListItemIcon>
-                                        <ListItemText primary="User List" />
-                                    </ListItem>
-                                </List>
-                            </Collapse>
-                        </div>
-                    ))}
-                </List>
 
+                    <div>
+                        <Link href='/'>
+                            <ListItem button key='Dashboard'>
+                                <ListItemIcon> <DashboardIcon /> </ListItemIcon>
+                                <ListItemText primary='Dashboard' />
+                            </ListItem>
+                        </Link>
+                        <ListItem button key='Manage User'>
+                            <ListItemIcon> <GroupIcon /> </ListItemIcon>
+                            <ListItemText primary='Manage User' onClick={handleClick} />
+                            {nestopen ? <ExpandLess /> : <ExpandMore />}
+                        </ListItem>
+                        <Collapse in={nestopen} timeout="auto" unmountOnExit>
+                            <List component="div" disablePadding>
+                                <ListItem button className={classes.nested}>
+                                    <ListItemIcon>
+                                        <StarBorder />
+                                    </ListItemIcon>
+                                    <Link href='/Userlist'>
+                                        <ListItemText primary="User List" />
+                                    </Link>
+                                </ListItem>
+                            </List>
+                        </Collapse>
+                        <Link href='/Home'>
+                            <ListItem button key='User History'>
+                                <ListItemIcon> <HistoryIcon /> </ListItemIcon>
+                                <ListItemText primary='User History' />
+                            </ListItem>
+                        </Link>
+                        <Link href='/Home'>
+                            <ListItem button key='Manage Documents'>
+                                <ListItemIcon> <AssignmentIcon /> </ListItemIcon>
+                                <ListItemText primary='Manage Documents' />
+                            </ListItem>
+                        </Link>
+                    </div>
+
+                </List>
             </Drawer>
             <main className={classes.content}>
                 <div style={{ height: 400, width: '100%', float: 'right' }}>
                     <div className={classes.toolbar} />
-                    <Userlist/>
+                    {props.children}
                 </div>
             </main>
         </div >

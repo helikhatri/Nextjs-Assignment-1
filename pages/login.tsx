@@ -68,8 +68,9 @@ let token='';
       debugger;
       if (response.status === 200) {
         localStorage.setItem("token", JSON.stringify(response.data.token));
-        userHasAuthenticated(true);
          token=response.data.token
+         console.log(response);
+         //userHasAuthenticated(true);
          Router.push('/Userlist');
       }
       else
