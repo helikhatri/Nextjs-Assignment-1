@@ -30,8 +30,9 @@ import MenuIcon from '@material-ui/icons/Menu';
 import ListIcon from '@material-ui/icons/List';
 import GroupIcon from '@material-ui/icons/Group';
 import Link from 'next/link';
-import React from 'react';
-
+import React, { useState, useEffect } from 'react';
+import Router from 'next/router';
+import cookie from 'js-cookie';
 
 export default function layout(props) {
     const theme = useTheme();
@@ -103,6 +104,7 @@ export default function layout(props) {
             padding: theme.spacing(3),
         },
     }));
+    
     const handleDrawerOpen = () => {
         setOpen(true);
     };
@@ -115,9 +117,12 @@ export default function layout(props) {
         setnestOpen(!nestopen);
     };
 
-
+    const logout = () => {
+        cookie.remove('token');
+        Router.push('/login')
+    }
+   
     const classes = useStyles();
-    console.log(props);
     return (
         <div className={classes.root}>
             <CssBaseline />
@@ -142,7 +147,7 @@ export default function layout(props) {
                     <Typography variant="h6" noWrap style={{ textAlign: 'center' }}>
                         {props.title}
                     </Typography>
-                    <Typography variant="h6" noWrap style={{ marginLeft: 'auto' }}>
+                    <Typography variant="h6" noWrap style={{ marginLeft: 'auto' }} onClick={logout}>
                         <Link href='/login'>Logout </Link>
                     </Typography>
                 </Toolbar>

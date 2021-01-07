@@ -15,7 +15,7 @@ import Container from '@material-ui/core/Container';
 import axios from 'axios';
 import Router from 'next/router';
 import { useAppContext } from "./contextLib";
-import jwt from 'jsonwebtoken';
+import cookie from 'js-cookie';
 
 function Copyright() {
   return (
@@ -67,9 +67,8 @@ let token='';
     axios.post(apiurl, payload).then(function (response) {
       debugger;
       if (response.status === 200) {
-        localStorage.setItem("token", JSON.stringify(response.data.token));
+        cookie.set("token", JSON.stringify(response.data.token));
          token=response.data.token
-         console.log(response);
          //userHasAuthenticated(true);
          Router.push('/Userlist');
       }
@@ -77,15 +76,7 @@ let token='';
       {
         alert("Check yur Username and password");
       }
-      // if(token)
-      // {
-      //   const json=jwt.decode(token) as {[key : string] : string};
-      //   Router.push('/Userlist');
-      // }
-      // else
-      // {
-      //   setMsg('Something went wrong');
-      // };
+     
     });
   };
 

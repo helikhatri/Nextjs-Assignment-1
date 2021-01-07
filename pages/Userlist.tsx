@@ -10,6 +10,7 @@ import Link from 'next/link';
 import { useAppContext } from "./contextLib";
 import axios from 'axios';
 import Layout from './layout';
+import cookie from 'js-cookie';
 
 interface IColumnNames {
   id: number
@@ -65,7 +66,7 @@ export default function DataTable() {
     }
   ];
 
-
+  
   const editRecord = (props: any) => {
     setAlert(true);
     const user = [...users];
@@ -98,6 +99,9 @@ export default function DataTable() {
   }, [])
 
   return (
+    !cookie.get('token') ?
+    <h1>access denied</h1>
+  :
     <Layout title="User List">
       {alert ?
         <Alert severity="success">
@@ -109,6 +113,7 @@ export default function DataTable() {
         checkboxSelection
       />
     </Layout>
+
   );
 }
 
