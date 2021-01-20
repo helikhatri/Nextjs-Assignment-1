@@ -1,4 +1,3 @@
-import { makeStyles, useTheme } from '@material-ui/core/styles';
 import {
   Button
 } from '@material-ui/core';
@@ -6,7 +5,6 @@ import React, { useState, useEffect } from 'react';
 import { DataGrid } from '@material-ui/data-grid';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import Router from 'next/router';
-import Link from 'next/link';
 import { useAppContext } from "./contextLib";
 import axios from 'axios';
 import Layout from './layout';
@@ -20,13 +18,13 @@ interface IColumnNames {
   year: string
   col: Function
 }
-export default function DataTable() {
-  const [users, setUsers] = useState<IColumnNames[]>([]);
+function DataTable({posts}) {
+  const [users, setUsers] = useState<IColumnNames[]>(posts.data);
   const apiurl = 'https://reqres.in/api/unknown';
   const [alert, setAlert] = useState<boolean>(false);
   const [msg, setMsg] = useState<string>('');
   const { isAuthenticated } = useAppContext();
-
+  console.log(posts);
   const columns = [
     { field: 'id', headerName: 'ID', width: 70 },
     { field: 'name', headerName: 'Name', width: 130 },
@@ -81,14 +79,14 @@ export default function DataTable() {
     setMsg('Record Deleted successfully');
   }
 
-  useEffect(() => {
+  // useEffect(() => {
 
-    axios.get(apiurl)
-      .then((response => {
-        setUsers(response.data.data)
-      }))
-    console.log(users);
-  }, [])
+  //   axios.get(apiurl)
+  //     .then((response => {
+  //       setUsers(response.data.data)
+  //     }))
+  //   console.log(users);
+  // }, [])
 
   useEffect(() => {
     setInterval(() => {
@@ -97,6 +95,8 @@ export default function DataTable() {
         : setAlert(false)
     }, 2000);
   }, [])
+
+  
 
   return (
     !cookie.get('token') ?
@@ -116,4 +116,16 @@ export default function DataTable() {
 
   );
 }
-
+export async function getStaticProps()
+{
+  const res =await fetch('https://reqres.in/api/unknown');
+  const posts = await res.json();
+  return(
+    {
+      props: {
+        posts,
+      },
+    }
+  )
+}
+export default DataTable;
